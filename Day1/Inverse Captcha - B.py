@@ -13,8 +13,12 @@
 #     -   123123 produces 12.
 #     -   12131415 produces 4.
 
+# Prepare input
 
-captcha = input()
+f = open('../Input/Day1-A.txt', 'r')
+captcha = f.read()
+
+# Process
 captchaLen = len(captcha)
 step = captchaLen // 2
 solution = 0

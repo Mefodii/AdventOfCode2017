@@ -11,8 +11,12 @@
 #
 # What is the solution to your captcha?
 
+# Prepare input
 
-captcha = input()
+f = open('../Input/Day1-A.txt', 'r')
+captcha = f.read()
+
+# Process
 captchaLen = len(captcha)
 step = 1
 solution = 0
