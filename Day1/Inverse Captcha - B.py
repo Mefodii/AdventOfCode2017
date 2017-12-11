@@ -14,7 +14,7 @@
 
 captcha = input()
 captchaLen = len(captcha)
-step = 1
+step = captchaLen // 2
 solution = 0
 
 for i in range(0, captchaLen):
