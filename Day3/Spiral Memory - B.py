@@ -22,6 +22,9 @@
 #
 # Your puzzle input is still 312051.
 
+# Prepare libs
+import time
+
 # Prepare input
 
 f = open('../Input/Day3-B.txt', 'r')
@@ -246,6 +249,8 @@ def calculate_next_value(values):
     return element_value
 
 
+start = time.time()
+
 for square in f:
     values_list = [1]
     targetValue = int(square)
@@ -255,3 +260,6 @@ for square in f:
 
     print("##--RESULT--##")
     print("Next value is: " + str(values_list[-1]))
+
+end = time.time()
+print(end - start)
