@@ -28,14 +28,6 @@ f = open('../Input/Day3-A.txt', 'r')
 
 
 # Process
-
-def calculate_range(value):
-    border_range = 1
-    while border_range ** 2 < value:
-        border_range += 2
-    return border_range
-
-
 def position_to_coords(element_position, matrix_range):
     # Standard mathematical XY axes orientation was chosen.
     # Value 1 is located at the center of the matrix. (Both X and Y positive values)
@@ -72,14 +64,14 @@ def coords_to_element_index(coordinates, current_range):
         elif coordinates['X'] == 0:
             current_position = current_range * 3 - 4 - coordinates['Y']
         elif coordinates['Y'] == 0:
-            current_position = current_range * 4 - 5 - coordinates['X']
+            current_position = current_range * 3 - 4 + coordinates['X']
         else:
             current_position = current_range * 2 - 3 - coordinates['X']
 
         # Convert calculated position on edge to index
         prev_range = current_range - 2
         current_index = prev_range ** 2 + current_position
-        print("COOR - " + str(coordinates))
+        print("COOR - " + str(coordinates), end=' ')
         print("POS - " + str(current_position), "IND - " + str(current_index), "RAN - " + str(current_range))
 
         return current_index
@@ -144,11 +136,8 @@ def get_adjacent_indexes(element_coordinates, element_range):
         indexes.append(coords_to_element_index(res_coord, res_range))
 
     # Debug variables
-    print("##--DEBUG--##")
-    print("UP = " + str(up), "DOWN = " + str(down), "RIGHT = " + str(right), "LEFT = " + str(left), sep='\n')
-    print("X = " + str(element_coordinates['X']))
-    print("Y = " + str(element_coordinates['Y']))
-    print("Range = " + str(element_range))
+    print("UP = " + str(up), "DOWN = " + str(down), "RIGHT = " + str(right), "LEFT = " + str(left), sep='\t')
+    print("X = " + str(element_coordinates['X']), "Y = " + str(element_coordinates['Y']), sep='\t')
     print(indexes)
 
     return indexes
@@ -160,17 +149,20 @@ def move_coordinates(direction, coordinates, element_range):
 
     if direction == "U":
         if 0 < next_coordinates['X'] < element_range - 1:
+            next_coordinates['X'] = next_coordinates['X'] - 1
             shrink = 2
         else:
             next_coordinates['Y'] = next_coordinates['Y'] + 1
     if direction == "D":
         if 0 < next_coordinates['X'] < element_range - 1:
+            next_coordinates['X'] = next_coordinates['X'] - 1
             next_coordinates['Y'] = next_coordinates['Y'] - 2
             shrink = 2
         else:
             next_coordinates['Y'] = next_coordinates['Y'] - 1
     if direction == "R":
         if 0 < next_coordinates['Y'] < element_range - 1:
+            next_coordinates['Y'] = next_coordinates['Y'] - 1
             shrink = 2
         else:
             next_coordinates['X'] = next_coordinates['X'] + 1
@@ -215,10 +207,19 @@ def move_coordinates(direction, coordinates, element_range):
 
 
 def calculate_position(element_index, element_range):
-    return element_index - ((element_range - 2) ** 2) - 1
+    return element_index - ((element_range - 2) ** 2)
+
+
+def calculate_range(value):
+    border_range = 3
+    while border_range ** 2 - 1 < value:
+        border_range += 2
+    return border_range
 
 
 def calculate_next_value(values):
+
+    print("##--DEBUG--##")
     element_index = len(values)
     element_range = calculate_range(element_index)
 
@@ -229,22 +230,28 @@ def calculate_next_value(values):
     # Get indexes of adjacent elements (if exists)
     adjacent_indexes = get_adjacent_indexes(element_coordinates, element_range)
 
-    # Result
-    value = values[-1] * 5
-    print("##--RESULT--##")
-    print("Inserted value = " + str(value), sep='\t')
+    # Calculate value for the value
+    element_value = 0
+    for index in adjacent_indexes:
+        if index < element_index:
+            element_value += values[index]
+
+    # Debug variables
+    print("Element index = " + str(element_index))
+    print("Element position = " + str(element_position))
+    print("Element range = " + str(element_range))
+    print("Element coordinates = " + str(element_coordinates))
+    print("Inserted value = " + str(element_value))
     print()
-    return value
+    return element_value
 
 
 for square in f:
     values_list = [1]
     targetValue = int(square)
 
-    get_adjacent_indexes({'X': 4, 'Y': 1}, 5)
-    # get_adjacent_indexes({'X': 4, 'Y': 2}, 5)
-    # get_adjacent_indexes({'X': 4, 'Y': 3}, 5)
-    # get_adjacent_indexes({'X': 4, 'Y': 4}, 5)
+    while values_list[-1] < targetValue:
+        values_list.append(calculate_next_value(values_list))
 
-    # while values_list[-1] < targetValue:
-    #     values_list.append(calculate_next_value(values_list))
+    print("##--RESULT--##")
+    print("Next value is: " + str(values_list[-1]))
