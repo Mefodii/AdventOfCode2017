@@ -27,7 +27,7 @@
 
 # Prepare input
 
-f = open('../Input/Day3-Test-A.txt', 'r')
+f = open('../Input/Day3-A.txt', 'r')
 
 # Process
 
@@ -39,7 +39,40 @@ for square in f:
     prevRange = currentRange - 2
 
     currentPosition = squareValue - (prevRange ** 2) - 1
-    print(squareValue, currentPosition, currentRange)
 
-    x = 0
-    y = 0
+    # Standard mathematical XY axes orientation was chosen.
+    # Value 1 is located at the center of the matrix. (Both X and Y positive values)
+    currentX = 0
+    currentY = 0
+    distance = 0
+    if currentPosition >= 0:
+        # Calculate coordinates for current number
+        if 0 <= currentPosition < currentRange - 2 :
+            currentX = currentRange - 1
+            currentY = currentPosition + 1
+        elif currentRange - 2 <= currentPosition < currentRange*2 - 2:
+            currentX = 2 * currentRange - currentPosition - 3
+            currentY = currentRange - 1
+        elif currentRange*2 - 2 <= currentPosition < currentRange*3 - 4:
+            currentX = 0
+            currentY = 3 * currentRange - currentPosition - 4
+        else:
+            currentX = currentPosition - (3 * currentRange - 4)
+            currentY = 0
+
+        # Set target coordinates
+        targetX = currentRange // 2
+        targetY = currentRange // 2
+
+        # Calculate distance
+        distance = abs(currentX - targetX) + abs(currentY - targetY)
+
+    # Debug variables
+    print("##--DEBUG--##")
+    print("Value: " + str(squareValue), "Position on edge: " + str(currentPosition), "X="+str(currentX),
+          "Y="+str(currentY), sep='\n')
+    print()
+
+    # Result
+    print("##--RESULT--##")
+    print("Number of steps = " + str(distance), sep='\t')
