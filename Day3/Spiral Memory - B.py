@@ -74,8 +74,8 @@ def coords_to_element_index(coordinates, current_range):
         # Convert calculated position on edge to index
         prev_range = current_range - 2
         current_index = prev_range ** 2 + current_position
-        print("COOR - " + str(coordinates), end=' ')
-        print("POS - " + str(current_position), "IND - " + str(current_index), "RAN - " + str(current_range))
+        # print("COOR - " + str(coordinates), end=' ')
+        # print("POS - " + str(current_position), "IND - " + str(current_index), "RAN - " + str(current_range))
 
         return current_index
 
@@ -139,9 +139,9 @@ def get_adjacent_indexes(element_coordinates, element_range):
         indexes.append(coords_to_element_index(res_coord, res_range))
 
     # Debug variables
-    print("UP = " + str(up), "DOWN = " + str(down), "RIGHT = " + str(right), "LEFT = " + str(left), sep='\t')
-    print("X = " + str(element_coordinates['X']), "Y = " + str(element_coordinates['Y']), sep='\t')
-    print(indexes)
+    # print("UP = " + str(up), "DOWN = " + str(down), "RIGHT = " + str(right), "LEFT = " + str(left), sep='\t')
+    # print("X = " + str(element_coordinates['X']), "Y = " + str(element_coordinates['Y']), sep='\t')
+    # print(indexes)
 
     return indexes
 
@@ -222,7 +222,7 @@ def calculate_range(value):
 
 def calculate_next_value(values):
 
-    print("##--DEBUG--##")
+    # print("##--DEBUG--##")
     element_index = len(values)
     element_range = calculate_range(element_index)
 
@@ -240,12 +240,12 @@ def calculate_next_value(values):
             element_value += values[index]
 
     # Debug variables
-    print("Element index = " + str(element_index))
-    print("Element position = " + str(element_position))
-    print("Element range = " + str(element_range))
-    print("Element coordinates = " + str(element_coordinates))
-    print("Inserted value = " + str(element_value))
-    print()
+    # print("Element index = " + str(element_index))
+    # print("Element position = " + str(element_position))
+    # print("Element range = " + str(element_range))
+    # print("Element coordinates = " + str(element_coordinates))
+    # print("Inserted value = " + str(element_value))
+    # print()
     return element_value
 
 
