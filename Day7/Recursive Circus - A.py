@@ -94,14 +94,14 @@ for tower in towers:
             towers[child_index]['Parent'] = tower.get('Name')
 
 # Get bottom tower
-botton_tower = None
+bottom_tower = None
 for tower in towers:
     if tower.get('Parent') == None:
-        botton_tower = tower
+        bottom_tower = tower
         break
 
 print("##--RESULT--##")
-print("Bottom tower: " + str(botton_tower.get('Name')))
+print("Bottom tower: " + str(bottom_tower.get('Name')))
 
 # Execution time
 end = time.time()

@@ -99,15 +99,24 @@ def tower_by_name(name, tower_list):
     return tower_list[index]
 
 
-def calculate_total_weight(tower, tower_list):
-    total_weight = 0
+def calculate_children_weight(tower, tower_list):
+    children_weight = 0
     for child_name in tower.get('Children'):
         child = tower_by_name(child_name, tower_list)
-        print(child)
 
-        total_weight += child['Weight']
+        child['Children weight'] = calculate_children_weight(child, tower_list)
+        child['Total weight'] = child['Weight'] + child['Children weight']
 
-    return total_weight
+        children_weight += child['Total weight']
+
+    return children_weight
+
+
+def calculate_balance_weight(tower, tower_list):
+    balance_weight = 0
+
+    return balance_weight
+
 
 # Prepare input
 start = time.time()
@@ -120,8 +129,8 @@ towers = []
 for input_line in f:
     input_data = input_line.split()
 
-    tower = {'Name': input_data[0], 'Weight': int(input_data[1][1:-1]), 'Total weight': None, 'Children': [],
-             'Parent': None}
+    tower = {'Name': input_data[0], 'Weight': int(input_data[1][1:-1]), 'Children weight': None, 'Total weight': None,
+             'Children': [], 'Parent': None}
     if len(input_data) > 2:
         for i in range(3,len(input_data)):
             child = {'Name': input_data[i]}
@@ -136,26 +145,25 @@ for tower in towers:
             child_index = tower_index_by_name(child, towers)
             towers[child_index]['Parent'] = tower.get('Name')
 
-for tower in towers:
-    print(tower)
-print()
-
 # Get bottom tower
-botton_tower = None
+bottom_tower = None
 for tower in towers:
     if tower.get('Parent') == None:
-        botton_tower = tower
+        bottom_tower = tower
         break
 
-
-botton_tower['Total weight'] = calculate_total_weight(botton_tower, towers)
+bottom_tower['Children weight'] = calculate_children_weight(bottom_tower, towers)
+bottom_tower['Total weight'] = bottom_tower['Weight'] + bottom_tower['Children weight']
 
 for tower in towers:
     print(tower)
 print()
 
+# Obtain tower weight for balance
+balance_weight = calculate_balance_weight(bottom_tower, towers)
+
 print("##--RESULT--##")
-print("Bottom tower: " + str(botton_tower.get('Name')))
+print("Bottom tower: " + str(bottom_tower.get('Name')))
 
 # Execution time
 end = time.time()
