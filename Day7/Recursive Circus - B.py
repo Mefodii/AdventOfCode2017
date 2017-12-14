@@ -114,13 +114,64 @@ def calculate_children_weight(tower, tower_list):
 
 def calculate_balance_weight(tower, tower_list):
     balance_weight = 0
+    processed_children_number = 0
+
+    first_unique_child = None
+    second_unique_child = None
+    unbalanced_tower = None
+    balanced_tower = None
+
+    for child_name in tower.get('Children'):
+        child = tower_by_name(child_name, tower_list)
+
+        if processed_children_number == 0:
+            # First child is always saved in first unique
+            first_unique_child = child
+            processed_children_number += 1
+        elif processed_children_number == 1:
+            # Saved second child in second unique if it's value differs from first unique
+            if first_unique_child.get('Total weight') != child.get('Total weight'):
+                second_unique_child = child
+            processed_children_number += 1
+        else:
+            # If both unique values are found then current child will detect unbalanced tower
+            if second_unique_child is None:
+                # If total weight of first unique is equals to current child, then search further.
+                # Otherwise child is unbalanced
+                if first_unique_child.get('Total weight') == child.get('Total weight'):
+                    pass
+                else:
+                    unbalanced_tower = child
+                    balanced_tower = first_unique_child
+            else:
+                # If first unique TW equals to child TW then second unique is unbalanced.
+                # Otherwise first unique is unbalanced
+                if first_unique_child.get('Total weight') == child.get('Total weight'):
+                    unbalanced_tower = second_unique_child
+                    balanced_tower = first_unique_child
+                else:
+                    unbalanced_tower = first_unique_child
+                    balanced_tower = second_unique_child
+            processed_children_number += 1
+
+        # If unbalanced tower is found break the loop. No more search is required.
+        if unbalanced_tower:
+            break
+
+    if unbalanced_tower:
+        balance_result = calculate_balance_weight(unbalanced_tower, tower_list)
+        if balance_result == 0:
+            difference = unbalanced_tower.get('Total weight') - balanced_tower.get('Total weight')
+            balance_weight = unbalanced_tower.get('Weight') - difference
+        else:
+            balance_weight = balance_result
 
     return balance_weight
 
 
 # Prepare input
 start = time.time()
-f = open('../Input/Day7-Test-A.txt', 'r')
+f = open('../Input/Day7-B.txt', 'r')
 
 # Process
 towers = []
@@ -155,15 +206,11 @@ for tower in towers:
 bottom_tower['Children weight'] = calculate_children_weight(bottom_tower, towers)
 bottom_tower['Total weight'] = bottom_tower['Weight'] + bottom_tower['Children weight']
 
-for tower in towers:
-    print(tower)
-print()
-
 # Obtain tower weight for balance
 balance_weight = calculate_balance_weight(bottom_tower, towers)
 
 print("##--RESULT--##")
-print("Bottom tower: " + str(bottom_tower.get('Name')))
+print("Weight needed for balance: " + str(balance_weight))
 
 # Execution time
 end = time.time()
