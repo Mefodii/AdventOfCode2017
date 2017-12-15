@@ -62,6 +62,7 @@ import time
 #######################################################################################################################
 def groups_build(current_index, line):
     groups = []
+    current_group = []
     value = None
     index = current_index + 1
 
@@ -70,19 +71,36 @@ def groups_build(current_index, line):
             result = groups_build(index, line)
             index = result.get("Index")
             for result_group in result.get("Groups"):
-                groups.append(result_group)
+                current_group.append(result_group)
         elif line[index] == "}":
             if value:
                 groups.append(value)
                 value = None
             else:
-                groups.append([])
+                groups.append(current_group)
+                current_group = []
 
             if index + 1 < len(line):
                 if line[index + 1] == ",":
-                    index += 1
+                    index += 3
                 else:
-                    return {"Groups": groups, "Index": index + 2}
+                    return {"Groups": groups, "Index": index + 1}
+        elif line[index] == "<":
+            value = ''
+            run = True
+
+            while run:
+                value += line[index]
+                index += 1
+                if line[index] == ">":
+                    run = False
+                    value += line[index]
+                    current_group.append(value)
+                    index += 2
+                elif line[index] == "!":
+                    index += 1
+                    value += line[index]
+
 
     return groups
 
@@ -93,11 +111,12 @@ def groups_build(current_index, line):
 def __main__(input_file):
     for input_line in input_file:
         groups = groups_build(0, input_line)
-        print(input_line)
+        print(input_line[:-1])
         print(groups)
+        print()
 
-        print("##--RESULT--##")
-        print("Some result: ")
+        # print("##--RESULT--##")
+        # print("Some result: ")
 
 #######################################################################################################################
 # Process
