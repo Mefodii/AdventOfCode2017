@@ -113,7 +113,7 @@ def hash_it(commands, knot_list):
     commands_full = commands + commands_tail
     current_index = 0
     skip_size = 0
-    hash_value = None
+    hash_value = ''
 
     # Sparse hash
     for i in range(64):
@@ -125,6 +125,7 @@ def hash_it(commands, knot_list):
     # Dense hash
     for i in range(len(knot_list_copy) // 16):
         combined_value = xor_combine(knot_list_copy[i * 16:(i+1) * 16])
+        hash_value += hex(combined_value)[2:].zfill(2)
 
     return hash_value
 
@@ -132,8 +133,7 @@ def hash_it(commands, knot_list):
 def xor_combine(values):
     combined_value = values[0]
     for i in range(1, len(values)):
-        combined_value = combined_value ^ values[1]
-    print(combined_value)
+        combined_value = combined_value ^ values[i]
     return combined_value
 
 
@@ -185,13 +185,10 @@ def __main__(input_file):
         knot_list.append(i)
 
     for input_line in input_file:
-
         commands = commands_build(input_line)
-        c = [65 , 27 , 9 , 1 , 4 ,3,40 ,50 ,91,7,6,0,2,5,68,22]
-        xor_combine(c)
-        # process_check_result = hash_it(commands, knot_list)
-        # print("##--RESULT--##")
-        # print("Knot check value:", process_check_result)
+        hash_value = hash_it(commands, knot_list)
+        print("##--RESULT--##")
+        print("Hash value value:", hash_value)
 
 
 #######################################################################################################################
@@ -202,7 +199,7 @@ if __name__ == "__main__":
     start = time.time()
 
     # Input file
-    input_file = open('../Input/Day10-Test-A.txt', 'r')
+    input_file = open('../Input/Day10-B.txt', 'r')
 
     # Main functionality
     __main__(input_file)
