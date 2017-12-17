@@ -51,6 +51,22 @@
 #   -   {{<a!>},{<a!>},{<a!>},{<ab>}}, score of 1 + 2 = 3.
 #
 # What is the total score for all groups in your input?
+#
+# --- Part Two ---
+# Now, you're ready to remove the garbage.
+#
+# To prove you've removed it, you need to count all of the characters within the garbage. The leading and trailing
+# < and > don't count, nor do any canceled characters or the ! doing the canceling.
+#
+#   -   <>, 0 characters.
+#   -   <random characters>, 17 characters.
+#   -   <<<<>, 3 characters.
+#   -   <{!>}>, 2 characters.
+#   -   <!!>, 0 characters.
+#   -   <!!!>>, 0 characters.
+#   -   <{o"i!a,<{i<a>, 10 characters.
+#
+# How many non-canceled characters are within the garbage in your puzzle input?
 
 #######################################################################################################################
 # Prepare libs
@@ -106,6 +122,32 @@ def calculate_score(groups, depth_level):
     return score
 
 
+def calculate_garbage(groups):
+    garbage_characters = 0
+
+    for group in groups:
+        if isinstance(group, list):
+            garbage_characters += calculate_garbage(group)
+        else:
+            garbage_characters += calculate_string_garbage(group[1:-1])
+
+    return garbage_characters
+
+
+def calculate_string_garbage(garbage):
+    garbage_characters = 0
+    index = 0
+
+    while index < len(garbage):
+        if garbage[index] == "!":
+            index += 2
+        else:
+            garbage_characters += 1
+            index += 1
+
+    return garbage_characters
+
+
 #######################################################################################################################
 # Main function
 #######################################################################################################################
@@ -113,7 +155,7 @@ def __main__(input_file):
     for input_line in input_file:
         result = groups_build(0, input_line.replace("\n", ''))
         groups = result.get("Groups")
-        total_score = calculate_score(groups, 1)
+        total_garbage = calculate_garbage(groups)
         # print(input_line.replace("\n", ''))
         # for group in groups:
         #     print(group, end=",")
@@ -121,7 +163,7 @@ def __main__(input_file):
         # print()
 
         print("##--RESULT--##")
-        print("Total score:", total_score)
+        print("Total garbage:", total_garbage)
 
 #######################################################################################################################
 # Process
@@ -131,7 +173,7 @@ if __name__ == "__main__":
     start = time.time()
 
     # Input file
-    input_file = open('../Input/Day9-A.txt', 'r')
+    input_file = open('../Input/Day9-B.txt', 'r')
 
     # Main functionality
     __main__(input_file)
