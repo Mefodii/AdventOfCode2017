@@ -13,7 +13,7 @@
 
 # Prepare input
 
-f = open('../Input/Day1-A.txt', 'r')
+f = open('../Input/Day1.txt', 'r')
 captcha = f.read()
 
 # Process

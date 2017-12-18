@@ -171,7 +171,7 @@ def calculate_balance_weight(tower, tower_list):
 
 # Prepare input
 start = time.time()
-f = open('../Input/Day7-B.txt', 'r')
+f = open('../Input/Day7.txt', 'r')
 
 # Process
 towers = []

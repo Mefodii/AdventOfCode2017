@@ -44,7 +44,7 @@ import math
 
 # Prepare input
 start = time.time()
-f = open('../Input/Day6-A.txt', 'r')
+f = open('../Input/Day6.txt', 'r')
 
 # Process
 banks = [int(value) for value in f.read().split()]

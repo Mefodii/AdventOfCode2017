@@ -18,7 +18,7 @@ import time
 
 # Prepare input
 start = time.time()
-f = open('../Input/Day4-A.txt', 'r')
+f = open('../Input/Day4.txt', 'r')
 
 # Process
 valid_passphrasess = 0

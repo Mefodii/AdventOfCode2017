@@ -46,7 +46,7 @@ import time
 
 # Prepare input
 start = time.time()
-f = open('../Input/Day5-B.txt', 'r')
+f = open('../Input/Day5.txt', 'r')
 
 # Process
 jumps = []

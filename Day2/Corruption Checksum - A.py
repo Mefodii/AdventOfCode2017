@@ -24,7 +24,7 @@ import sys
 
 # Prepare input
 
-f = open('../Input/Day2-A.txt', 'r')
+f = open('../Input/Day2.txt', 'r')
 
 # Process
 
