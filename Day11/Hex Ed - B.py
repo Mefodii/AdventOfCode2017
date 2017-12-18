@@ -26,6 +26,8 @@
 #   -   ne,ne,s,s is 2 steps away (se,se).
 #   -   se,sw,se,sw,sw is 3 steps away (s,s,sw).
 #
+# --- Part Two ---
+# How many steps away is the furthest he ever got from his starting position?
 #######################################################################################################################
 # Prepare libs
 #######################################################################################################################
@@ -36,34 +38,36 @@ import time
 #######################################################################################################################
 def find_child_process(commands):
     my_coords = {"X": 0, "Y": 0}
-    child_coords = follow_path(commands)
-    # print(child_coords)
-
-    distance = calculate_hex_distance(my_coords, child_coords)
-    # print(distance)
-
-    return distance
-
-
-def follow_path(commands):
-    x = 0
-    y = 0
+    child_coords = {"X": 0, "Y": 0}
+    max_distance = 0
 
     for command in commands:
-        if command == "n":
-            y += 1
-        elif command == "ne":
-            x += 1
-        elif command == "nw":
-            x -= 1
-            y += 1
-        elif command == "s":
-            y -= 1
-        elif command == "se":
-            x += 1
-            y -= 1
-        elif command == "sw":
-            x -= 1
+        child_coords = follow_path(command, child_coords)
+        distance = calculate_hex_distance(my_coords, child_coords)
+        max_distance = max(max_distance, distance)
+
+
+    return max_distance
+
+
+def follow_path(command, coords):
+    x = coords.get("X")
+    y = coords.get("Y")
+
+    if command == "n":
+        y += 1
+    elif command == "ne":
+        x += 1
+    elif command == "nw":
+        x -= 1
+        y += 1
+    elif command == "s":
+        y -= 1
+    elif command == "se":
+        x += 1
+        y -= 1
+    elif command == "sw":
+        x -= 1
 
     return {"X": x, "Y": y}
 
@@ -88,9 +92,9 @@ def calculate_hex_distance(initial_coords, final_coords):
 #######################################################################################################################
 def __main__(input_file):
     for input_line in input_file:
-        min_distance = find_child_process(input_line.replace("\n",'').split(","))
+        max_distance = find_child_process(input_line.replace("\n",'').split(","))
         print("##--RESULT--##")
-        print("Distance to child:", min_distance)
+        print("Furthest distance child went:", max_distance)
 
 #######################################################################################################################
 # Process
