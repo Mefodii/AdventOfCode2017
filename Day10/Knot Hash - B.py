@@ -199,7 +199,7 @@ if __name__ == "__main__":
     start = time.time()
 
     # Input file
-    input_file = open('../Input/Day10-B.txt', 'r')
+    input_file = open('../Input/Day10.txt', 'r')
 
     # Main functionality
     __main__(input_file)
