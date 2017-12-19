@@ -93,6 +93,8 @@ def dance(dance_moves):
         dance_move_list.append(dance_move)
 
     for i in range(1000000000):
+        if i % 10000 == 0:
+            print((i / 1000000000) * 100, "% finished")
         for dance_move in dance_move_list:
             programs = dance_move_execute(dance_move, programs)
 
