@@ -27,7 +27,7 @@
 
 # Prepare input
 
-f = open('../Input/Day3-A.txt', 'r')
+f = open('../Input/Day3.txt', 'r')
 
 # Process
 

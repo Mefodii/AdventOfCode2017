@@ -27,7 +27,7 @@ import time
 
 # Prepare input
 
-f = open('../Input/Day3-B.txt', 'r')
+f = open('../Input/Day3.txt', 'r')
 
 
 # Process
