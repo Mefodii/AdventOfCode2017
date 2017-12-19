@@ -175,20 +175,23 @@ def commands_build(command_line):
     return commands
 
 
+def string_to_knot_hash(input_line):
+    knot_list = [int(i) for i in range(256)]
+
+    commands = commands_build(input_line)
+    hash_value = hash_it(commands, knot_list)
+
+    return hash_value
+
+
 #######################################################################################################################
 # Main function
 #######################################################################################################################
 def __main__(input_file):
-    knot_list = []
-    knot_range = 256
-    for i in range(knot_range):
-        knot_list.append(i)
 
-    for input_line in input_file:
-        commands = commands_build(input_line)
-        hash_value = hash_it(commands, knot_list)
-        print("##--RESULT--##")
-        print("Hash value value:", hash_value)
+    hash_value = hash(input_file.read())
+    print("##--RESULT--##")
+    print("Hash value value:", string_to_knot_hash)
 
 
 #######################################################################################################################
