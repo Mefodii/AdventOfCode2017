@@ -12,14 +12,29 @@ import time
 
 
 #######################################################################################################################
+# Root function
+#######################################################################################################################
+def some_function():
+    pass
+
+#######################################################################################################################
 # Main function
 #######################################################################################################################
 def __main__(input_file):
-    for input_line in input_file:
-        pass
+    # 1. One result <-> More lines
+    # result = some_function(input_file)
+
+    # 2. One result <-> One line
+    # result = some_function(input_file.read())
 
     print("##--RESULT--##")
-    print("Some result:")
+    # print("Some result:", result)
+
+    # 2.1 For test purposes
+    # for input_line in input_file:
+    #     result = some_function(input_line.replace("\n", ""))
+    #     print("##--RESULT--##")
+    #     print("Some result:", result)
 
 
 #######################################################################################################################
@@ -39,5 +54,3 @@ if __name__ == "__main__":
     end = time.time()
     # Running time of the program
     print("Program ran for: ", end - start, "seconds.")
-
-
