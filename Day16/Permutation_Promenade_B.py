@@ -45,41 +45,56 @@ import time
 #######################################################################################################################
 # Functions
 #######################################################################################################################
-def dance_move_execute(dance_move, programs):
-    dance_move_name = dance_move[0]
-    if dance_move_name == "s":
-        spin_center = int(dance_move[1:])
-        programs = spin(spin_center, programs)
-    elif dance_move_name == "x":
-        positions = dance_move[1:].split("/")
-        first_position = int(positions[0])
-        second_position = int(positions[1])
-        programs = exchange(first_position, second_position, programs)
-    elif dance_move_name == "p":
-        partners = dance_move[1:].split("/")
-        first_partner = partners[0]
-        second_partner = partners[1]
-        programs = partner(first_partner, second_partner, programs)
+def dance_move_execute(dance_move, first_parameter, second_parameter, programs):
+    if dance_move == "s":
+        programs = spin(first_parameter, programs)
+    elif dance_move == "x":
+        programs = exchange(first_parameter, second_parameter, programs)
+    elif dance_move == "p":
+        programs = partner(first_parameter, second_parameter, programs)
 
     return programs
 
 
+def compile_move(dance_move):
+    dance_move_name = dance_move[0]
+    first_parameter = None
+    second_parameter = None
+    if dance_move_name == "s":
+        first_parameter = 16 - int(dance_move[1:])
+    elif dance_move_name == "x":
+        positions = dance_move[1:].split("/")
+        first_parameter = int(positions[0])
+        second_parameter = int(positions[1])
+    elif dance_move_name == "p":
+        partners = dance_move[1:].split("/")
+        first_parameter = partners[0]
+        second_parameter = partners[1]
+
+    return [dance_move_name, first_parameter, second_parameter]
+
+
 def spin(spin_center, programs):
-    split_index = len(programs) - spin_center
-    programs = programs[split_index:len(programs)] + programs[0:split_index]
+    programs = programs[spin_center:len(programs)] + programs[0:spin_center]
     return programs
 
 
 def exchange(first_position, second_position, programs):
-    temp_program = programs[first_position]
-    programs[first_position] = programs[second_position]
-    programs[second_position] = temp_program
+    programs[second_position], programs[first_position] = programs[first_position], programs[second_position]
     return programs
 
+
 def partner(first_partner, second_partner, programs):
-    first_partner_index = programs.index(first_partner)
-    second_partner_index = programs.index(second_partner)
-    return exchange(first_partner_index, second_partner_index, programs)
+    return exchange(programs.index(first_partner), programs.index(second_partner), programs)
+
+
+def search_in_log(programs, dance_log):
+    for i in range(len(dance_log)):
+        if dance_log[i] == programs:
+            return i
+
+    return -1
+
 
 
 #######################################################################################################################
@@ -90,19 +105,30 @@ def dance(dance_moves):
 
     dance_move_list = []
     for dance_move in dance_moves.split(","):
-        dance_move_list.append(dance_move)
+        dance_move_list.append(compile_move(dance_move))
 
-    for i in range(1000000000):
-        if i % 10000 == 0:
-            print((i / 1000000000) * 100, "% finished")
-        for dance_move in dance_move_list:
-            programs = dance_move_execute(dance_move, programs)
+    dance_log = []
+    run = True
+    run_number = 0
+    total_run = 1000000000
+    loop_start_index = -1
 
-    programs_string = ""
-    for program in programs:
-        programs_string += program
+    while run and run_number < total_run:
+        run_number += 1
+        loop_start_index = search_in_log(''.join(programs), dance_log)
+        if loop_start_index < 0:
+            dance_log.append(''.join(programs))
+            for dance_move in dance_move_list:
+                programs = dance_move_execute(dance_move[0], dance_move[1], dance_move[2], programs)
+        else:
+            run = False
 
-    return programs_string
+    dance_log_looped = dance_log[loop_start_index:]
+
+    long_dance_result_programs_index = (total_run - run_number + 1) % len(dance_log_looped)
+    long_dance_result_programs = dance_log_looped[long_dance_result_programs_index]
+
+    return ''.join(long_dance_result_programs)
 
 #######################################################################################################################
 # Main function
