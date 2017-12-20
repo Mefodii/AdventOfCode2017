@@ -14,24 +14,25 @@ import time
 #######################################################################################################################
 # Root function
 #######################################################################################################################
-def some_function():
-    pass
+def some_function(input_data):
+    return input_data
+
 
 #######################################################################################################################
 # Main function
 #######################################################################################################################
-def __main__(input_file):
+def __main__(input_data):
     # 1. One result <-> More lines
-    # result = some_function(input_file)
+    result = some_function(input_data)
 
     # 2. One result <-> One line
-    # result = some_function(input_file.read())
+    # result = some_function(input_data.read())
 
     print("##--RESULT--##")
-    # print("Some result:", result)
+    print("Some result:", result)
 
     # 2.1 For test purposes
-    # for input_line in input_file:
+    # for input_line in input_data:
     #     result = some_function(input_line.replace("\n", ""))
     #     print("##--RESULT--##")
     #     print("Some result:", result)
