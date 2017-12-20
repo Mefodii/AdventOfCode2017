@@ -45,6 +45,19 @@
 # What is the value after 2017 in your completed circular buffer?
 #
 # Your puzzle input is 369.
+# --- Part Two ---
+# The spinlock does not short-circuit. Instead, it gets more angry. At least, you assume that's what happened; it's
+# spinning significantly faster than it was a moment ago.
+#
+# You have good news and bad news.
+#
+# The good news is that you have improved calculations for how to stop the spinlock. They indicate that you actually
+# need to identify the value after 0 in the current state of the circular buffer.
+#
+# The bad news is that while you were determining this, the spinlock has just finished inserting its fifty millionth
+# value (50000000).
+#
+# What is the value after 0 the moment 50000000 is inserted?
 
 
 #######################################################################################################################
@@ -64,19 +77,22 @@ import time
 def spinlock(steps_forward_string):
     steps_forward_int = int(steps_forward_string)
 
-    spinlock_memory = [0]
+    spinlock_len = 1
     spinlock_index = 0
     spinlock_current_value = 0
+    value_after_0 = None
 
-    while spinlock_current_value < 2017:
+    while spinlock_current_value < 50000000:
         spinlock_current_value += 1
-        spinlock_next_index = (spinlock_index + steps_forward_int) % len(spinlock_memory) + 1
-        spinlock_memory.insert(spinlock_next_index, spinlock_current_value)
 
+        spinlock_next_index = (spinlock_index + steps_forward_int) % spinlock_len + 1
+        if spinlock_next_index == 1:
+            value_after_0 = spinlock_current_value
+
+        spinlock_len += 1
         spinlock_index = spinlock_next_index
 
-    spinlock_next_value = spinlock_memory[(spinlock_index + 1) % len(spinlock_memory)]
-    return spinlock_next_value
+    return value_after_0
 
 #######################################################################################################################
 # Main function
