@@ -39,12 +39,44 @@
 # stay closest.
 #
 # Which particle will stay closest to position <0,0,0> in the long term?
+# --- Part Two ---
+# To simplify the problem further, the GPU would like to remove any particles that collide. Particles collide if their
+# positions ever exactly match. Because particles are updated simultaneously, more than two particles can collide at the
+# same time and place. Once particles collide, they are removed and cannot collide with anything else after that tick.
+#
+# For example:
+#
+# p=<-6,0,0>, v=< 3,0,0>, a=< 0,0,0>
+# p=<-4,0,0>, v=< 2,0,0>, a=< 0,0,0>    -6 -5 -4 -3 -2 -1  0  1  2  3
+# p=<-2,0,0>, v=< 1,0,0>, a=< 0,0,0>    (0)   (1)   (2)            (3)
+# p=< 3,0,0>, v=<-1,0,0>, a=< 0,0,0>
+#
+# p=<-3,0,0>, v=< 3,0,0>, a=< 0,0,0>
+# p=<-2,0,0>, v=< 2,0,0>, a=< 0,0,0>    -6 -5 -4 -3 -2 -1  0  1  2  3
+# p=<-1,0,0>, v=< 1,0,0>, a=< 0,0,0>             (0)(1)(2)      (3)
+# p=< 2,0,0>, v=<-1,0,0>, a=< 0,0,0>
+#
+# p=< 0,0,0>, v=< 3,0,0>, a=< 0,0,0>
+# p=< 0,0,0>, v=< 2,0,0>, a=< 0,0,0>    -6 -5 -4 -3 -2 -1  0  1  2  3
+# p=< 0,0,0>, v=< 1,0,0>, a=< 0,0,0>                       X (3)
+# p=< 1,0,0>, v=<-1,0,0>, a=< 0,0,0>
+#
+# ------destroyed by collision------
+# ------destroyed by collision------    -6 -5 -4 -3 -2 -1  0  1  2  3
+# ------destroyed by collision------                      (3)
+# p=< 0,0,0>, v=<-1,0,0>, a=< 0,0,0>
+#
+# In this example, particles 0, 1, and 2 are simultaneously destroyed at the time and place marked X. On the next tick,
+# particle 3 passes through unharmed.
+#
+# How many particles are left after all collisions are resolved?
 
 
 #######################################################################################################################
 # Prepare libs
 #######################################################################################################################
 import time
+import sys
 import copy
 
 
@@ -129,15 +161,100 @@ def get_closest_particle(particle_list):
     return closest_particle
 
 
+def sum_coords(first_coords, second_coords):
+    x_first = first_coords.get("X")
+    y_first = first_coords.get("Y")
+    z_first = first_coords.get("Z")
+
+    x_second = second_coords.get("X")
+    y_second = second_coords.get("Y")
+    z_second = second_coords.get("Z")
+
+    x = x_first + x_second
+    y = y_first + y_second
+    z = z_first + z_second
+
+    return {"X": x, "Y": y, "Z": z}
+
+
+def next_velocity(particle):
+    return sum_coords(particle.get("Velocity"), particle.get("Acceleration"))
+
+
+def next_position(particle):
+    return sum_coords(particle.get("Velocity"), particle.get("Position"))
+
+
+def compare_particle_positions(particle_first, particle_second):
+    return compare_coords(particle_first.get("Position"), particle_second.get("Position"))
+
+
+def compare_coords(first_coords, second_coords):
+    x_first = first_coords.get("X")
+    y_first = first_coords.get("Y")
+    z_first = first_coords.get("Z")
+
+    x_second = second_coords.get("X")
+    y_second = second_coords.get("Y")
+    z_second = second_coords.get("Z")
+
+    if x_first == x_second and y_first == y_second and z_first == z_second:
+        return True
+    else:
+        return False
+
+
+def next_second(particle_list):
+    for particle in particle_list:
+        particle["Velocity"] = next_velocity(particle)
+        particle["Position"] = next_position(particle)
+
+    i = 0
+    while i < len(particle_list):
+        collision = False
+        j = i + 1
+        while j < len(particle_list):
+            if compare_particle_positions(particle_list[i], particle_list[j]):
+                collision = True
+                del particle_list[j]
+                j -= 1
+            j += 1
+
+        if collision:
+            collision = False
+            del particle_list[i]
+            i -= 1
+        i += 1
+
+    return particle_list
+
+
+def simulate_particles(particle_list):
+    loop_detector = 0
+    previous_length = -1
+    remained_particles = dict_copy(particle_list)
+
+    while loop_detector < 20:
+        remained_particles = next_second(dict_copy(remained_particles))
+
+        if len(remained_particles) != previous_length:
+            previous_length = len(remained_particles)
+            loop_detector = 0
+        else:
+            loop_detector += 1
+
+    return remained_particles
+
+
 #######################################################################################################################
 # Root function
 #######################################################################################################################
 def particle_swarm(input_data):
     particle_list = build_particles(input_data)
 
-    closest_particle = get_closest_particle(particle_list)
+    remained_particles = simulate_particles(particle_list)
 
-    return closest_particle
+    return len(remained_particles)
 
 
 #######################################################################################################################
