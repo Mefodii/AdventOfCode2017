@@ -85,6 +85,8 @@
 # Thus, after 2 iterations, the grid contains 12 pixels that are on.
 #
 # How many pixels stay on after 5 iterations?
+# --- Part Two ---
+# How many pixels stay on after 18 iterations?
 
 
 #######################################################################################################################
@@ -229,9 +231,10 @@ def fractal_art(input_data):
     matrix = build_matrix()
 
     run_index = 0
-    while run_index < 5:
+    while run_index < 18:
         matrix = expand_matrix(matrix, rule_list)
         run_index += 1
+        print(run_index)
 
     for row in matrix:
         print(row)
